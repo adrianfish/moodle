@@ -220,7 +220,7 @@ function lti_build_sourcedid($instanceid, $userid, $launchid = null, $servicesal
  * @return array    $request        Request details
  */
 function lti_build_request($instance, $typeconfig, $course) {
-    global $USER, $CFG;
+    global $USER, $CFG, $PAGE;
 
     if (empty($instance->cmid)) {
         $instance->cmid = 0;
@@ -233,11 +233,14 @@ function lti_build_request($instance, $typeconfig, $course) {
          $locale = $CFG->lang;
     }
 
+    $userpicture = new user_picture($USER);
+
     $requestparams = array(
         'resource_link_id' => $instance->id,
         'resource_link_title' => $instance->name,
         'resource_link_description' => $instance->intro,
         'user_id' => $USER->id,
+        'user_image' => $userpicture->get_url($PAGE)->out(),
         'roles' => $role,
         'context_id' => $course->id,
         'context_label' => $course->shortname,
