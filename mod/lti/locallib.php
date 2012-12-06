@@ -230,7 +230,12 @@ function lti_build_request($instance, $typeconfig, $course) {
 
     $locale = $course->lang;
     if ( strlen($locale) < 1 ) {
-         $locale = $CFG->lang;
+        // The course language is not enforced. Use the user's profile setting.
+        $locale = $USER->lang;
+        if ( strlen($locale) < 1 ) {
+            // No language specced for user. Use the default.
+            $locale = $CFG->lang;
+         }
     }
 
     $requestparams = array(
