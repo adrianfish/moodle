@@ -77,7 +77,7 @@ define('LTI_SETTING_DELEGATE', 2);
  * $param int $basicltiid       Basic LTI activity id
  */
 function lti_view($instance) {
-    global $PAGE, $CFG;
+    global $PAGE, $CFG, $USER;
 
     if (empty($instance->typeid)) {
         $tool = lti_get_tool_by_url_match($instance->toolurl, $instance->course);
@@ -173,6 +173,9 @@ function lti_view($instance) {
     }
 
     $requestparams['launch_presentation_return_url'] = $returnurl;
+
+    $email_delivery_preference = ($USER->maildigest > 0) ? 'digest' : 'immediate';
+    $requestparams['ext_email_delivery_preference'] = $email_delivery_preference;
 
     if (!empty($key) && !empty($secret)) {
         $parms = lti_sign_parameters($requestparams, $endpoint, "POST", $key, $secret);
