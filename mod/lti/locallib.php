@@ -275,6 +275,24 @@ function lti_build_request($instance, $typeconfig, $course) {
         $requestparams['lis_outcome_service_url'] = $serviceurl;
     }
 
+    if ( isset($placementsecret) &&
+         ( $typeconfig['allowroster'] == LTI_SETTING_ALWAYS ||
+         ( $typeconfig['allowroster'] == LTI_SETTING_DELEGATE && $instance->instructorchoiceallowroster == LTI_SETTING_ALWAYS ) ) ) {
+
+        $requestparams['ext_ims_lis_memberships_id'] = $instance->id;
+
+        //Add memberships service URL
+        $serviceurl = new moodle_url('/mod/lti/service.php');
+        $serviceurl = $serviceurl->out();
+
+        if ($typeconfig['forcessl'] == '1') {
+            $serviceurl = lti_ensure_url_is_https($serviceurl);
+        }
+
+        // Allows provider tools to pull the course roster
+        $requestparams['ext_ims_lis_memberships_url'] = $serviceurl;
+    }
+
     // Send user's name and email data if appropriate
     if ( $typeconfig['sendname'] == LTI_SETTING_ALWAYS ||
          ( $typeconfig['sendname'] == LTI_SETTING_DELEGATE && $instance->instructorchoicesendname == LTI_SETTING_ALWAYS ) ) {
