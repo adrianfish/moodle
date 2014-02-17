@@ -62,7 +62,7 @@ switch ($action) {
                 FROM {lti_types_config}
                 WHERE
                     typeid = :typeid
-                AND name IN (\'sendname\', \'sendemailaddr\', \'acceptgrades\')
+                AND name IN (\'sendname\', \'sendemailaddr\', \'acceptgrades\', \'allowroster\')
             ';
 
             $privacyconfigs = $DB->get_records_sql($query, array('typeid' => $toolid));

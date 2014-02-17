@@ -27,6 +27,8 @@
 require_once(dirname(__FILE__) . "/../../config.php");
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 require_once($CFG->dirroot.'/mod/lti/servicelib.php');
+require_once($CFG->dirroot.'/lib/accesslib.php');
+require_once($CFG->dirroot.'/lib/grouplib.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149
 use moodle\mod\lti as lti;
@@ -53,11 +55,18 @@ if ($sharedsecret === false) {
     throw new Exception('Message signature not valid');
 }
 
-$xml = new SimpleXMLElement($rawbody);
+$messagetype = NULL;
 
-$body = $xml->imsx_POXBody;
-foreach ($body->children() as $child) {
-    $messagetype = $child->getName();
+try {
+    $xml = new SimpleXMLElement($rawbody);
+
+    $body = $xml->imsx_POXBody;
+    foreach ($body->children() as $child) {
+        $messagetype = $child->getName();
+    }
+} catch (Exception $e) {
+    // Not XML. Could be legacy key value pairs.
+    $messagetype = $_REQUEST['lti_message_type'];
 }
 
 switch ($messagetype) {
@@ -138,6 +147,18 @@ switch ($messagetype) {
         );
 
         echo $responsexml->asXML();
+
+        break;
+
+    case 'readMembershipsRequest':
+
+        echo lti_get_memberships_xml($xml);
+
+        break;
+
+    case 'readMembershipsWithGroupsRequest':
+
+        echo lti_get_memberships_xml($xml, true);
 
         break;
 
