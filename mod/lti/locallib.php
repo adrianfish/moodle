@@ -543,7 +543,7 @@ function lti_get_ims_role($user, $cmid, $courseid) {
         //a real LTI instance
         $coursecontext = context_course::instance($courseid);
 
-        if (has_capability('moodle/course:manageactivities', $coursecontext)) {
+        if (has_capability('moodle/course:manageactivities', $coursecontext, $user)) {
             array_push($roles, 'Instructor');
         } else {
             array_push($roles, 'Learner');
@@ -551,7 +551,7 @@ function lti_get_ims_role($user, $cmid, $courseid) {
     } else {
         $context = context_module::instance($cmid);
 
-        if (has_capability('mod/lti:manage', $context)) {
+        if (has_capability('mod/lti:manage', $context, $user)) {
             array_push($roles, 'Instructor');
         } else {
             array_push($roles, 'Learner');
