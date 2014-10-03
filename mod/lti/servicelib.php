@@ -315,10 +315,8 @@ function lti_get_memberships_xml($xml, $include_groups = FALSE) {
 
     foreach ($userlist as $user) {
 
-        $role = 'Learner';
-        if ($user->shortname == 'editingteacher' || $user->shortname == 'admin') {
-            $role = 'Instructor';
-        }
+        $role = lti_get_ims_role($user, null, $id);
+
         $membernode = $membershipsnode->addChild('member');
         $membernode->addChild('user_id',htmlspecialchars($user->id));
         $membernode->addChild('roles',$role);
